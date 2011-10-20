@@ -1,0 +1,291 @@
+[
+ 	{
+	 	"caption": "Edit",
+    "mnemonic": "E",
+    "id": "edit",
+    "children":[
+		{ "caption": "-", "id": "encoding-separator" },
+
+					{"command":"toutf8from_best_guess"},
+					{"caption": "Convert to UTF-8 From Encoding",
+					 "children":
+						[
+						//ALL
+							{"caption":"Complete List Sorted", "children":
+								[
+									{"caption":"BIG5", "command":"toutf8from","args": {"encoding":"BIG5" } },
+									{"caption":"BIG5HKSCS", "command":"toutf8from","args": {"encoding":"BIG5HKSCS" } },
+									{"caption":"-"},
+									{"caption": "CP", "children":
+									[
+										{"caption":"CP037", "command":"toutf8from","args": {"encoding":"CP037" } },
+										{"caption":"CP424", "command":"toutf8from","args": {"encoding":"CP424" } },
+										{"caption":"CP437", "command":"toutf8from","args": {"encoding":"CP437" } },
+										{"caption":"CP500", "command":"toutf8from","args": {"encoding":"CP500" } },
+										{"caption":"CP720", "command":"toutf8from","args": {"encoding":"CP720" } },
+										{"caption":"CP737", "command":"toutf8from","args": {"encoding":"CP737" } },
+										{"caption":"CP775", "command":"toutf8from","args": {"encoding":"CP775" } },
+										{"caption":"CP850", "command":"toutf8from","args": {"encoding":"CP850" } },
+										{"caption":"CP852", "command":"toutf8from","args": {"encoding":"CP852" } },
+										{"caption":"CP855", "command":"toutf8from","args": {"encoding":"CP855" } },
+										{"caption":"CP856", "command":"toutf8from","args": {"encoding":"CP856" } },
+										{"caption":"CP857", "command":"toutf8from","args": {"encoding":"CP857" } },
+										{"caption":"CP858", "command":"toutf8from","args": {"encoding":"CP858" } },
+										{"caption":"CP860", "command":"toutf8from","args": {"encoding":"CP860" } },
+										{"caption":"CP861", "command":"toutf8from","args": {"encoding":"CP861" } },
+										{"caption":"CP862", "command":"toutf8from","args": {"encoding":"CP862" } },
+										{"caption":"CP863", "command":"toutf8from","args": {"encoding":"CP863" } },
+										{"caption":"CP864", "command":"toutf8from","args": {"encoding":"CP864" } },
+										{"caption":"CP865", "command":"toutf8from","args": {"encoding":"CP865" } },
+										{"caption":"CP866", "command":"toutf8from","args": {"encoding":"CP866" } },
+										{"caption":"CP869", "command":"toutf8from","args": {"encoding":"CP869" } },
+										{"caption":"CP874", "command":"toutf8from","args": {"encoding":"CP874" } },
+										{"caption":"CP875", "command":"toutf8from","args": {"encoding":"CP875" } },
+										{"caption":"CP932", "command":"toutf8from","args": {"encoding":"CP932" } },
+										{"caption":"CP949", "command":"toutf8from","args": {"encoding":"CP949" } },
+										{"caption":"CP950", "command":"toutf8from","args": {"encoding":"CP950" } },
+										{"caption":"CP1006", "command":"toutf8from","args": {"encoding":"CP1006" } },
+										{"caption":"CP1026", "command":"toutf8from","args": {"encoding":"CP1026" } },
+										{"caption":"CP1140", "command":"toutf8from","args": {"encoding":"CP1140" } },
+										{"caption":"CP1250", "command":"toutf8from","args": {"encoding":"CP1250" } },
+										{"caption":"CP1251", "command":"toutf8from","args": {"encoding":"CP1251" } },
+										{"caption":"CP1252", "command":"toutf8from","args": {"encoding":"CP1252" } },
+										{"caption":"CP1253", "command":"toutf8from","args": {"encoding":"CP1253" } },
+										{"caption":"CP1254", "command":"toutf8from","args": {"encoding":"CP1254" } },
+										{"caption":"CP1255", "command":"toutf8from","args": {"encoding":"CP1255" } },
+										{"caption":"CP1256", "command":"toutf8from","args": {"encoding":"CP1256" } },
+										{"caption":"CP1257", "command":"toutf8from","args": {"encoding":"CP1257" } },
+										{"caption":"CP1258", "command":"toutf8from","args": {"encoding":"CP1258" } }
+									]},
+									{"caption":"-"},
+									{"caption":"EUC JIS 2004", "command":"toutf8from","args": {"encoding":"EUC_JIS_2004" } },
+									{"caption":"EUC JISX0213", "command":"toutf8from","args": {"encoding":"EUC_JISX0213" } },
+									{"caption":"EUC JP", "command":"toutf8from","args": {"encoding":"EUC_JP" } },
+									{"caption":"EUC KR", "command":"toutf8from","args": {"encoding":"EUC_KR" } },
+									{"caption":"-"},
+									{"caption":"GB2312", "command":"toutf8from","args": {"encoding":"GB2312" } },
+									{"caption":"GB18030", "command":"toutf8from","args": {"encoding":"GB18030" } },
+									{"caption":"GBK", "command":"toutf8from","args": {"encoding":"GBK" } },
+									{"caption":"-"},
+									{"caption":"HZ", "command":"toutf8from","args": {"encoding":"HZ" } },
+									{"caption":"-"},
+									{"caption": "ISO", "children":
+										[
+											{"caption":"ISO2022 JP 1", "command":"toutf8from","args": {"encoding":"ISO2022_JP_1" } },
+											{"caption":"ISO2022 JP 2", "command":"toutf8from","args": {"encoding":"ISO2022_JP_2" } },
+											{"caption":"ISO2022 JP 3", "command":"toutf8from","args": {"encoding":"ISO2022_JP_3" } },
+											{"caption":"ISO2022 JP 2004", "command":"toutf8from","args": {"encoding":"ISO2022_JP_2004" } },
+											{"caption":"ISO2022 JP EXT", "command":"toutf8from","args": {"encoding":"ISO2022_JP_EXT" } },
+											{"caption":"ISO2022 JP", "command":"toutf8from","args": {"encoding":"ISO2022_JP" } },
+											{"caption":"ISO2022 KR", "command":"toutf8from","args": {"encoding":"ISO2022_KR" } },
+											{"caption":"-"},
+											{"caption":"ISO8859 1", "command":"toutf8from","args": {"encoding":"ISO8859_1" } },
+											{"caption":"ISO8859 2", "command":"toutf8from","args": {"encoding":"ISO8859_2" } },
+											{"caption":"ISO8859 3", "command":"toutf8from","args": {"encoding":"ISO8859_3" } },
+											{"caption":"ISO8859 4", "command":"toutf8from","args": {"encoding":"ISO8859_4" } },
+											{"caption":"ISO8859 5", "command":"toutf8from","args": {"encoding":"ISO8859_5" } },
+											{"caption":"ISO8859 6", "command":"toutf8from","args": {"encoding":"ISO8859_6" } },
+											{"caption":"ISO8859 7", "command":"toutf8from","args": {"encoding":"ISO8859_7" } },
+											{"caption":"ISO8859 8", "command":"toutf8from","args": {"encoding":"ISO8859_8" } },
+											{"caption":"ISO8859 9", "command":"toutf8from","args": {"encoding":"ISO8859_9" } },
+											{"caption":"ISO8859 10", "command":"toutf8from","args": {"encoding":"ISO8859_10" } },
+											{"caption":"ISO8859 13", "command":"toutf8from","args": {"encoding":"ISO8859_13" } },
+											{"caption":"ISO8859 14", "command":"toutf8from","args": {"encoding":"ISO8859_14" } },
+											{"caption":"ISO8859 15", "command":"toutf8from","args": {"encoding":"ISO8859_15" } },
+											{"caption":"ISO8859 16", "command":"toutf8from","args": {"encoding":"ISO8859_16" } }
+										]},
+									{"caption":"-"},
+									{"caption":"JOHAB", "command":"toutf8from","args": {"encoding":"JOHAB" } },
+									{"caption":"KOI8 R", "command":"toutf8from","args": {"encoding":"KOI8_R" } },
+									{"caption":"KOI8 U", "command":"toutf8from","args": {"encoding":"KOI8_U" } },
+									{"caption":"LATIN 1", "command":"toutf8from","args": {"encoding":"LATIN_1" } },
+									{"caption":"-"},
+									{"caption":"MAC CYRILLIC", "command":"toutf8from","args": {"encoding":"MAC_CYRILLIC" } },
+									{"caption":"MAC GREEK", "command":"toutf8from","args": {"encoding":"MAC_GREEK" } },
+									{"caption":"MAC ICELAND", "command":"toutf8from","args": {"encoding":"MAC_ICELAND" } },
+									{"caption":"MAC LATIN2", "command":"toutf8from","args": {"encoding":"MAC_LATIN2" } },
+									{"caption":"MAC ROMAN", "command":"toutf8from","args": {"encoding":"MAC_ROMAN" } },
+									{"caption":"MAC TURKISH", "command":"toutf8from","args": {"encoding":"MAC_TURKISH" } },
+									{"caption":"-"},
+									{"caption":"PTCP154", "command":"toutf8from","args": {"encoding":"PTCP154" } },
+									{"caption":"-"},
+									{"caption":"SHIFT JIS", "command":"toutf8from","args": {"encoding":"SHIFT_JIS" } },
+									{"caption":"SHIFT JIS 2004", "command":"toutf8from","args": {"encoding":"SHIFT_JIS_2004" } },
+									{"caption":"SHIFT JISX0213", "command":"toutf8from","args": {"encoding":"SHIFT_JISX0213" } },
+									{"caption":"-"},
+									{"caption": "UTF", "children":
+										[
+											{"caption":"UTF 7", "command":"toutf8from","args": {"encoding":"UTF_7" } },
+											{"caption":"UTF 16", "command":"toutf8from","args": {"encoding":"UTF_16" } },
+											{"caption":"UTF 16 LE", "command":"toutf8from","args": {"encoding":"UTF_16_LE" } },
+											{"caption":"UTF 16 BE", "command":"toutf8from","args": {"encoding":"UTF_16_BE" } },
+											{"caption":"UTF 32", "command":"toutf8from","args": {"encoding":"UTF_32" } },
+											{"caption":"UTF 32 LE", "command":"toutf8from","args": {"encoding":"UTF_32_LE" } },
+											{"caption":"UTF 32 BE", "command":"toutf8from","args": {"encoding":"UTF_32_BE" } }
+										]
+									}
+								]
+							},
+							{"caption":"-"},
+							{"caption": "UTF", "children":
+								[
+									{"caption":"UTF 7" ,"command":"toutf8from","args": {"encoding":"UTF_7" } },
+									{"caption":"UTF 16" , "command": "toutf8from", "args": {"encoding": "UTF_16" } },
+									{"caption":"UTF 16 BE (BMP only)" ,"command":"toutf8from","args": {"encoding":"UTF_16_BE" } },
+									{"caption":"UTF 16 LE (BMP only)" ,"command":"toutf8from","args": {"encoding":"UTF_16_LE" } },
+									{"caption":"UTF 32" ,"command":"toutf8from","args": {"encoding":"UTF_32" } },
+									{"caption":"UTF 32 BE" ,"command":"toutf8from","args": {"encoding":"UTF_32_BE" } },
+									{"caption":"UTF 32 LE" ,"command":"toutf8from","args": {"encoding":"UTF_32_LE" } }
+								]
+							},
+							{"caption":"-"},
+							{"caption": "Chinese, Japanese, Korean", "children":
+								[
+									{"caption":"Traditional Chinese (BIG5)" ,"command":"toutf8from","args": {"encoding":"BIG5" } },
+									{"caption":"Traditional Chinese (BIG5HKSCS)" ,"command":"toutf8from","args": {"encoding":"BIG5HKSCS" } },
+									{"caption":"Traditional Chinese (CP950)" ,"command":"toutf8from","args": {"encoding":"CP950" } },
+									{"caption":"-"},
+									{"caption":"Simplified Chinese (GB2312)" ,"command":"toutf8from","args": {"encoding":"GB2312" } },
+									{"caption":"Simplified Chinese (HZ)" ,"command":"toutf8from","args": {"encoding":"HZ" } },
+									{"caption":"-"},
+									{"caption":"Unified Chinese (GB18030)" ,"command":"toutf8from","args": {"encoding":"GB18030" } },
+									{"caption":"Unified Chinese (GBK)" ,"command":"toutf8from","args": {"encoding":"GBK" } },
+									{"caption":"-"},
+									{"caption":"Japanese (CP932)" ,"command":"toutf8from","args": {"encoding":"CP932" } },
+									{"caption":"Japanese (EUC JIS 2004)" ,"command":"toutf8from","args": {"encoding":"EUC_JIS_2004" } },
+									{"caption":"Japanese (EUC JISX0213)" ,"command":"toutf8from","args": {"encoding":"EUC_JISX0213" } },
+									{"caption":"Japanese (EUC JP)" ,"command":"toutf8from","args": {"encoding":"EUC_JP" } },
+									{"caption":"Japanese (ISO2022 JP)" ,"command":"toutf8from","args": {"encoding":"ISO2022_JP" } },
+									{"caption":"Japanese (ISO2022 JP 1)" ,"command":"toutf8from","args": {"encoding":"ISO2022_JP_1" } },
+									{"caption":"Japanese, Korean, Simplified Chinese, Western Europe, Greek (ISO2022 JP 2)" ,"command":"toutf8from","args": {"encoding":"ISO2022_JP_2" } },
+									{"caption":"Japanese (ISO2022 JP 3)" ,"command":"toutf8from","args": {"encoding":"ISO2022_JP_3" } },
+									{"caption":"Japanese (ISO2022 JP 2004)" ,"command":"toutf8from","args": {"encoding":"ISO2022_JP_2004" } },
+									{"caption":"Japanese (ISO2022 JP EXT)" ,"command":"toutf8from","args": {"encoding":"ISO2022_JP_EXT" } },
+									{"caption":"Japanese (SHIFT JIS)" ,"command":"toutf8from","args": {"encoding":"SHIFT_JIS" } },
+									{"caption":"Japanese (SHIFT JIS 2004)" ,"command":"toutf8from","args": {"encoding":"SHIFT_JIS_2004" } },
+									{"caption":"Japanese (SHIFT JISX0213)" ,"command":"toutf8from","args": {"encoding":"SHIFT_JISX0213" } },
+									{"caption":"-"},
+									{"caption":"Korean (CP949)" ,"command":"toutf8from","args": {"encoding":"CP949" } },
+									{"caption":"Korean (EUC KR)" ,"command":"toutf8from","args": {"encoding":"EUC_KR" } },
+									{"caption":"Korean (ISO2022 KR)" ,"command":"toutf8from","args": {"encoding":"ISO2022_KR" } },
+									{"caption":"Korean (JOHAB)" ,"command":"toutf8from","args": {"encoding":"JOHAB" } }
+								]
+							},
+							{"caption": "Russian, Ukrainian", "children":
+								[
+									{"caption":"CP855" ,"command":"toutf8from","args": {"encoding":"CP855" } },
+									{"caption":"CP1251" ,"command":"toutf8from","args": {"encoding":"CP1251" } },
+									{"caption":"ISO8859 5" ,"command":"toutf8from","args": {"encoding":"ISO8859_5" } },
+									{"caption":"MAC CYRILLIC" ,"command":"toutf8from","args": {"encoding":"MAC_CYRILLIC" } },
+									{"caption":"-"},
+									{"caption":"Russian (CP866)" ,"command":"toutf8from","args": {"encoding":"CP866" } },
+									{"caption":"Russian (KOI8 R)" ,"command":"toutf8from","args": {"encoding":"KOI8_R" } },
+									{"caption":"-"},
+									{"caption":"Ukrainian (KOI8 U)" ,"command":"toutf8from","args": {"encoding":"KOI8_U" } }
+								]
+							},
+
+							{"caption":"-"},
+							{"caption": "Arabic", "children":
+								[
+									{"caption":"CP720" ,"command":"toutf8from","args": {"encoding":"CP720" } },
+									{"caption":"CP864" ,"command":"toutf8from","args": {"encoding":"CP864" } },
+									{"caption":"CP1256" ,"command":"toutf8from","args": {"encoding":"CP1256" } },
+									{"caption":"ISO8859 6" ,"command":"toutf8from","args": {"encoding":"ISO8859_6" } }
+								]
+							},
+							{"caption":"Canadian (CP863)" ,"command":"toutf8from","args": {"encoding":"CP863" } },
+							{"caption":"Danish, Norwegian (CP865)" ,"command":"toutf8from","args": {"encoding":"CP865" } },
+							{"caption": "English", "children":
+								[
+									{"caption":"CP037" ,"command":"toutf8from","args": {"encoding":"CP037" } },
+									{"caption":"CP437" ,"command":"toutf8from","args": {"encoding":"CP437" } }
+								]
+							},
+							{"caption":"Esperanto, Maltese (ISO8859 3)" ,"command":"toutf8from","args": {"encoding":"ISO8859_3" } },
+							{"caption": "Greek", "children":
+								[
+									{"caption":"CP737" ,"command":"toutf8from","args": {"encoding":"CP737" } },
+									{"caption":"CP869" ,"command":"toutf8from","args": {"encoding":"CP869" } },
+									{"caption":"CP875" ,"command":"toutf8from","args": {"encoding":"CP875" } },
+									{"caption":"CP1253" ,"command":"toutf8from","args": {"encoding":"CP1253" } },
+									{"caption":"ISO8859 7" ,"command":"toutf8from","args": {"encoding":"ISO8859_7" } },
+									{"caption":"MAC GREEK" ,"command":"toutf8from","args": {"encoding":"MAC_GREEK" } }
+								]
+							},
+							{	"caption": "Hebrew", "children":
+								[
+									{"caption":"CP424" ,"command":"toutf8from","args": {"encoding":"CP424" } },
+									{"caption":"CP856" ,"command":"toutf8from","args": {"encoding":"CP856" } },
+									{"caption":"CP862" ,"command":"toutf8from","args": {"encoding":"CP862" } },
+									{"caption":"CP1255" ,"command":"toutf8from","args": {"encoding":"CP1255" } },
+									{"caption":"ISO8859 8" ,"command":"toutf8from","args": {"encoding":"ISO8859_8" } }
+								]
+							},
+							{"caption": "Icelandic", "children":
+								[
+									{"caption":"CP861" ,"command":"toutf8from","args": {"encoding":"CP861" } },
+									{"caption":"MAC ICELAND" ,"command":"toutf8from","args": {"encoding":"MAC_ICELAND" } }
+								]
+							},
+							{"caption":"Kazakh (PTCP154)" ,"command":"toutf8from","args": {"encoding":"PTCP154" } },
+							{"caption":"Portuguese (CP860)" ,"command":"toutf8from","args": {"encoding":"CP860" } },
+							{"caption":"Thai (CP874)" ,"command":"toutf8from","args": {"encoding":"CP874" } },
+							{"caption": "Turkish", "children":
+								[
+									{"caption":"CP857" ,"command":"toutf8from","args": {"encoding":"CP857" } },
+									{"caption":"CP1026" ,"command":"toutf8from","args": {"encoding":"CP1026" } },
+									{"caption":"CP1254" ,"command":"toutf8from","args": {"encoding":"CP1254" } },
+									{"caption":"ISO8859 9" ,"command":"toutf8from","args": {"encoding":"ISO8859_9" } },
+									{"caption":"MAC TURKISH" ,"command":"toutf8from","args": {"encoding":"MAC_TURKISH" } }
+								]
+							},
+							{"caption":"Urdu (CP1006)" ,"command":"toutf8from","args": {"encoding":"CP1006" } },
+							{"caption":"Vietnamese (CP1258)" ,"command":"toutf8from","args": {"encoding":"CP1258" } },
+							
+
+						
+						//REGION
+							{"caption":"-"},
+							{"caption": "Baltic languages", "children":
+								[
+									{"caption":"CP775" ,"command":"toutf8from","args": {"encoding":"CP775" } },
+									{"caption":"CP1257" ,"command":"toutf8from","args": {"encoding":"CP1257" } },
+									{"caption":"ISO8859 13" ,"command":"toutf8from","args": {"encoding":"ISO8859_13" } },
+									{"caption":"ISO8859 4" ,"command":"toutf8from","args": {"encoding":"ISO8859_4" } }
+								]
+							},
+							{"caption":"Celtic languages (ISO8859 14)" ,"command":"toutf8from","args": {"encoding":"ISO8859_14" } },
+							{"caption":"Nordic languages (ISO8859 10)" ,"command":"toutf8from","args": {"encoding":"ISO8859_10" } },
+
+						
+						//LOCATION
+							{"caption":"-"},
+							{"caption": "Central and Eastern Europe", "children":
+								[
+									{"caption":"CP852" ,"command":"toutf8from","args": {"encoding":"CP852" } },
+									{"caption":"CP1250" ,"command":"toutf8from","args": {"encoding":"CP1250" } },
+									{"caption":"ISO8859 2" ,"command":"toutf8from","args": {"encoding":"ISO8859_2" } },
+									{"caption":"CMAC LATIN2" ,"command":"toutf8from","args": {"encoding":"MAC_LATIN2" } }
+								]
+							},
+							{"caption":"South-Eastern Europe (ISO8859 16)" ,"command":"toutf8from","args": {"encoding":"ISO8859_16" } },
+							{"caption":"West Europe (LATIN 1)" ,"command":"toutf8from","args": {"encoding":"LATIN_1" } },
+							{"caption": "Western Europe", "children":
+								[
+									{"caption":"CP500" ,"command":"toutf8from","args": {"encoding":"CP500" } },
+									{"caption":"CP850" ,"command":"toutf8from","args": {"encoding":"CP850" } },
+									{"caption":"CP858" ,"command":"toutf8from","args": {"encoding":"CP858" } },
+									{"caption":"CP1140" ,"command":"toutf8from","args": {"encoding":"CP1140" } },
+									{"caption":"CP1252" ,"command":"toutf8from","args": {"encoding":"CP1252" } },
+									{"caption":"ISO8859 15" ,"command":"toutf8from","args": {"encoding":"ISO8859_15" } },
+									{"caption":"MAC ROMAN" ,"command":"toutf8from","args": {"encoding":"MAC_ROMAN" } }
+								]
+							}
+						]
+					}
+				]
+			
+    
+  }
+]
