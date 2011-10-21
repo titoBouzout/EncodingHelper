@@ -112,6 +112,9 @@ class GuessEncoding(threading.Thread):
 					encoding = 'Unknown'
 				else:
 					encoding = fallback
+			if encoding == 'Unknown' and maybe_binary(self.file_name):
+				encoding = 'BINARY'
+				confidence = 0.7
 			del detector
 		sublime.set_timeout(functools.partial(self.callback, encoding), 0)
 
