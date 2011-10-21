@@ -105,18 +105,24 @@ class GuessEncoding(threading.Thread):
 			if encoding == 'ASCII':
 				encoding = 'UTF-8'
 			elif encoding == None or encoding == 'NONE' or encoding == '' or encoding == 'Unknown' or confidence < 0.7:
-				fallback = self.test_fallback_encodings()
-				if fallback == False:
-					encoding = 'Unknown'
+				if encoding == 'ISO-8859-2' and confidence > 0.69:
+					workaround = self.test_fallback_encodings(['UTF-8', 'ISO-8859-1'])
+					if workaround != False:
+						encoding = workaround
+					else:
+						encoding = 'Unknown'
+				elif encoding != 'ISO-8859-2' and confidence > 0.49:
+					if encoding == 'WINDOWS-1252':
+						encoding = 'ISO-8859-1'
 				else:
-					encoding = fallback
+					fallback = self.test_fallback_encodings()
+					if fallback == False:
+						encoding = 'Unknown'
+					else:
+						encoding = fallback
 
-			# mark binary as last chance
-			if encoding == 'Unknown' and maybe_binary(self.file_name):
-				encoding = 'BINARY'
-				confidence = 0.7
 			# workarounds here
-			if encoding == 'ISO-8859-2' or  encoding == 'MACCYRILLIC':
+			if (encoding == 'ISO-8859-2' and confidence < 0.7 ) or encoding == 'MACCYRILLIC':
 				workaround = self.test_fallback_encodings(['UTF-8', 'ISO-8859-1'])
 				if workaround != False:
 					encoding = workaround
@@ -251,4 +257,4 @@ def maybe_binary(file_name):
 			return False
 		line = fp.readline(8000)
 	fp.close()
-	return False	
+	return False
