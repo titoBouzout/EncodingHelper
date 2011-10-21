@@ -139,8 +139,9 @@ class GuessEncoding(threading.Thread):
 		if encodings == False:
 			encodings = self.fallback_encodings
 		for encoding in encodings:
+			_encoding = translateCodec(encoding.lower())
 			try:
-				fp = codecs.open(self.file_name, "rb", encoding.lower(), errors='strict')
+				fp = codecs.open(self.file_name, "rb", _encoding, errors='strict')
 				line = fp.readline(500)
 				while line != '':
 					line = fp.readline(8000)
@@ -223,13 +224,16 @@ class ConvertToUTF8(threading.Thread):
 			self.callback = callback
 
 	def run(self):
+		_encoding = translateCodec(self.encoding.lower())
 		try:
-			content = codecs.open(self.file_name, "rb", self.encoding.lower(), errors='strict').read()
+			content = codecs.open(self.file_name, "rb", _encoding, errors='strict').read()
 			if len(content) != 0:
 				sublime.set_timeout(functools.partial(self.callback, content, self.encoding), 0)
-		except UnicodeDecodeError:
+		except UnicodeDecodeError, e:
+			print e
 			sublime.set_timeout(functools.partial(self.on_error, self.file_name, self.encoding), 0)
-		except LookupError:
+		except LookupError, e:
+			print e
 			sublime.set_timeout(functools.partial(self.on_lookup_error, self.file_name, self.encoding), 0)
 
 	def on_done(self, content, encoding):
@@ -243,10 +247,10 @@ class ConvertToUTF8(threading.Thread):
 			self.v.set_status('encoding_helper_statusbar_converted_from', 'Converted to UTF-8 from '+encoding)
 	
 	def on_error(self, file_name, encoding):
-		sublime.error_message('Encoding helper message, unable to convert to UTF-8 the file \n'+file_name+' \nFrom encoding "'+encoding+'"');
+		sublime.error_message('Unable to convert to UTF-8 from encoding "'+encoding+'" the file: \n'+file_name);
 	
 	def on_lookup_error(self, file_name, encoding):
-		sublime.error_message('Encoding helper message, the encoding "'+encoding+'" is unknown in this system.\n Unable to convert to UTF-8 the file \n'+file_name+' \nFrom encoding "'+encoding+'"');
+		sublime.error_message('The encoding "'+encoding+'" is unknown in this system.\n Unable to convert to UTF-8 the file: \n'+file_name);
 
 def maybe_binary(file_name):
 	fp = open(file_name, 'rb')
@@ -263,3 +267,7 @@ def maybe_binary(file_name):
 		line = fp.readline(8000)
 	fp.close()
 	return False
+
+# should map different codecs to what codec.open except to receive
+def translateCodec(encoding):
+		return str(encoding)
