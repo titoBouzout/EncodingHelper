@@ -60,8 +60,13 @@ class GuessEncoding(threading.Thread):
 	def __init__(self, file_name, fallback_encodings = [], v = False,  callback = False):
 		threading.Thread.__init__(self)
 		self.file_name = file_name
+		
+		encoding_list = []
+		for encoding in fallback_encodings:
+			if encoding != 'ISO88591' and  encoding != 'iso88591' and encoding != 'iso-8859-1' and encoding != 'ISO-8859-1':
+				encoding_list.append(encoding)
+		self.fallback_encodings = encoding_list
 
-		self.fallback_encodings = fallback_encodings
 		self.v = v
 		if callback == False:
 			self.callback = self.on_done

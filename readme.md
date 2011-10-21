@@ -55,6 +55,7 @@ http://pypi.python.org/pypi/chardet
 
 dataset small:
 http://vancouver-webpages.com/multilingual/
+http://charsetplus.tripod.com/HTMLs/index.html
 
 dataset huge:
 http://www.mauvecloud.net/charsets/index.html
