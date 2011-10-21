@@ -102,24 +102,30 @@ class GuessEncoding(threading.Thread):
 				encoding = 'Unknown'
 				confidence = 1
 
-			if encoding == None or encoding == 'NONE' or encoding == '':
-				encoding = 'BINARY'
-			elif encoding == 'ASCII':
-				encoding = 'UTF-8' 
-			elif confidence < 0.7:
+			if encoding == 'ASCII':
+				encoding = 'UTF-8'
+			elif encoding == None or encoding == 'NONE' or encoding == '' or encoding == 'Unknown' or confidence < 0.7:
 				fallback = self.test_fallback_encodings()
 				if fallback == False:
 					encoding = 'Unknown'
 				else:
 					encoding = fallback
+
+			# mark binary as last chance
 			if encoding == 'Unknown' and maybe_binary(self.file_name):
 				encoding = 'BINARY'
 				confidence = 0.7
+			# workarounds here
+			if encoding == 'ISO-8859-2':
+				workaround = self.test_fallback_encodings('ISO-8859-1')
+				if workaround != False:
+					encoding = workaround
+
 			del detector
 		sublime.set_timeout(functools.partial(self.callback, encoding), 0)
 
-	def test_fallback_encodings(self):
-		for encoding in self.fallback_encodings:
+	def test_fallback_encodings(self, encoding = False):
+		if encoding != False:
 			try:
 				fp = codecs.open(self.file_name, "rb", encoding.lower(), errors='strict')
 				line = fp.readline(500)
@@ -127,9 +133,21 @@ class GuessEncoding(threading.Thread):
 					line = fp.readline(8000)
 				fp.close()
 				return encoding
-			except UnicodeDecodeError:
+			except:
 				fp.close()
-		return False
+			return False
+		else:
+			for encoding in self.fallback_encodings:
+				try:
+					fp = codecs.open(self.file_name, "rb", encoding.lower(), errors='strict')
+					line = fp.readline(500)
+					while line != '':
+						line = fp.readline(8000)
+					fp.close()
+					return encoding
+				except UnicodeDecodeError:
+					fp.close()
+			return False
 
 	def on_done(self, encoding):
 		if self.v != False:
