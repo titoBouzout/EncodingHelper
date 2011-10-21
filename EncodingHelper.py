@@ -70,13 +70,14 @@ class GuessEncoding(threading.Thread):
 
 	def run(self):
 		confidence = 0
+		size = os.stat(self.file_name).st_size
 		if BINARY.search(self.file_name):
 			encoding = 'BINARY'
 			confidence = 1
-		elif maybe_binary(self.file_name):
+		elif size > 1048576 and maybe_binary(self.file_name):
 			encoding = 'BINARY'
 			confidence = 0.7
-		elif os.stat(self.file_name).st_size > 1048576: # skip files > 1Mb
+		elif size > 1048576: # skip files > 1Mb
 			encoding = 'Unknown'
 			confidence = 1
 		else:
@@ -93,13 +94,15 @@ class GuessEncoding(threading.Thread):
 					break
 				line = fp.readline(8000)
 			fp.close()
-			detector.close()
-			if timeout == False:
+			
+			if timeout == False or (timeout == True and detector.done):
 				encoding = str(detector.result['encoding']).upper()
 				confidence = detector.result['confidence']
 			else:
 				encoding = 'Unknown'
 				confidence = 1
+				
+			detector.close()
 			del detector
 
 			if encoding == None or encoding == 'NONE' or encoding == '':
