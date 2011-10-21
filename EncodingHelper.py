@@ -11,8 +11,8 @@ import threading
 import time
 
 # don't parse binary files, just mark these as binary
-				 						#IMAGES----------------------#sublime---------------#fonts-----------#compressed
-BINARY = re.compile('(png|jpg|gif|jpeg|psd|ai|cdr|cache|sublime-package|eot|svgz|ttf|woff|zip|tar|gz|rar)$', re.I);
+				 						#IMAGES-------------------------------------#sublime---------------#fonts-----------#compressed----------------#audio-video--------------------------------------------------#docs------------------------------#misc
+BINARY = re.compile('\.(apng|png|jpg|gif|jpeg|bmp|psd|ai|cdr|ico|cache|sublime-package|eot|svgz|ttf|woff|zip|tar|gz|rar|bz2|jar|xpi|mov|mpeg|avi|mpg|flv|wmv|mp3|wav|aif|aiff|snd|wma|asf|asx|pcm|pdf|doc|docx|xls|xlsx|ppt|pptx|rtf|sqlite|sqlitedb|fla|swf|exe)$', re.I);
 
 SETTINGS = sublime.load_settings('EncodingHelper.sublime-settings')
 
@@ -117,15 +117,17 @@ class GuessEncoding(threading.Thread):
 				confidence = 0.7
 			# workarounds here
 			if encoding == 'ISO-8859-2':
-				workaround = self.test_fallback_encodings('ISO-8859-1')
+				workaround = self.test_fallback_encodings(['UTF-8', 'ISO-8859-1'])
 				if workaround != False:
 					encoding = workaround
 
 			del detector
 		sublime.set_timeout(functools.partial(self.callback, encoding), 0)
 
-	def test_fallback_encodings(self, encoding = False):
-		if encoding != False:
+	def test_fallback_encodings(self, encodings = False):
+		if encodings == False:
+			encodings = self.fallback_encodings
+		for encoding in encodings:
 			try:
 				fp = codecs.open(self.file_name, "rb", encoding.lower(), errors='strict')
 				line = fp.readline(500)
@@ -133,21 +135,9 @@ class GuessEncoding(threading.Thread):
 					line = fp.readline(8000)
 				fp.close()
 				return encoding
-			except:
+			except UnicodeDecodeError:
 				fp.close()
-			return False
-		else:
-			for encoding in self.fallback_encodings:
-				try:
-					fp = codecs.open(self.file_name, "rb", encoding.lower(), errors='strict')
-					line = fp.readline(500)
-					while line != '':
-						line = fp.readline(8000)
-					fp.close()
-					return encoding
-				except UnicodeDecodeError:
-					fp.close()
-			return False
+		return False
 
 	def on_done(self, encoding):
 		if self.v != False:
