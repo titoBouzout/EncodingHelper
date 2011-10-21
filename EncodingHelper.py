@@ -116,7 +116,7 @@ class GuessEncoding(threading.Thread):
 				encoding = 'BINARY'
 				confidence = 0.7
 			# workarounds here
-			if encoding == 'ISO-8859-2':
+			if encoding == 'ISO-8859-2' or  encoding == 'MACCYRILLIC':
 				workaround = self.test_fallback_encodings(['UTF-8', 'ISO-8859-1'])
 				if workaround != False:
 					encoding = workaround
