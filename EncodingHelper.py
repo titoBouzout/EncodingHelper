@@ -94,16 +94,13 @@ class GuessEncoding(threading.Thread):
 					break
 				line = fp.readline(8000)
 			fp.close()
-			
+			detector.close()
 			if timeout == False or (timeout == True and detector.done):
 				encoding = str(detector.result['encoding']).upper()
 				confidence = detector.result['confidence']
 			else:
 				encoding = 'Unknown'
 				confidence = 1
-				
-			detector.close()
-			del detector
 
 			if encoding == None or encoding == 'NONE' or encoding == '':
 				encoding = 'BINARY'
@@ -115,7 +112,7 @@ class GuessEncoding(threading.Thread):
 					encoding = 'Unknown'
 				else:
 					encoding = fallback
-
+			del detector
 		sublime.set_timeout(functools.partial(self.callback, encoding), 0)
 
 	def test_fallback_encodings(self):
