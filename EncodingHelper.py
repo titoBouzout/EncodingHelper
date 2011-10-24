@@ -20,7 +20,7 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 
 	def on_load(self, v):
 
-		# if enabled, show encoding on status bar 
+		# if enabled, show encoding on status bar
 		if bool(SETTINGS.get('show_encoding_on_status_bar', True)):
 
 			# mark as loading
@@ -43,7 +43,7 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 					GuessEncoding(file_name, SETTINGS.get('fallback_encodings'), v).start()
 		else:
 			v.erase_status('encoding_helper_statusbar')
-	
+
 	def on_activated(self, v):
 		if bool(SETTINGS.get('show_encoding_on_status_bar', True)):
 			if v.settings().has('encoding_helper_loading'):
@@ -60,7 +60,7 @@ class GuessEncoding(threading.Thread):
 	def __init__(self, file_name, fallback_encodings = [], v = False,  callback = False):
 		threading.Thread.__init__(self)
 		self.file_name = file_name
-		
+
 		encoding_list = []
 		for encoding in fallback_encodings:
 			if encoding != 'ISO88591' and  encoding != 'iso88591' and encoding != 'iso-8859-1' and encoding != 'ISO-8859-1':
@@ -156,11 +156,11 @@ class GuessEncoding(threading.Thread):
 			self.v.settings().set('encoding_helper_encoding', encoding)
 			self.v.settings().erase('encoding_helper_loading')
 			self.v.set_status('encoding_helper_statusbar', encoding)
-			if encoding in SETTINGS.get('open_automatically_as_utf8', []):
+			if encoding in SETTINGS.get('open_automatically_as_utf8', []) and self.v.is_dirty() == False:
 				ConvertToUTF8(self.file_name, encoding, self.v).start()
 
 class Toutf8fromBestGuessCommand(sublime_plugin.WindowCommand):
-	
+
 	def run(self):
 		encoding = sublime.active_window().active_view().settings().get('encoding_helper_encoding')
 		if encoding != None and encoding != 'UTF-8' and encoding != 'BINARY' and encoding != 'Unknown' and encoding != '':
@@ -185,7 +185,7 @@ class Toutf8fromBestGuessCommand(sublime_plugin.WindowCommand):
 			return False
 
 class Toutf8fromCommand(sublime_plugin.WindowCommand):
-	
+
 	def run(self, encoding = ''):
 		try:
 			if encoding == None or encoding == 'UTF-8' or encoding == 'BINARY' or encoding == 'Unknown' or encoding == '':
@@ -245,10 +245,10 @@ class ConvertToUTF8(threading.Thread):
 			if bool(SETTINGS.get('show_encoding_on_status_bar', True)):
 				self.v.set_status('encoding_helper_statusbar', 'UTF-8')
 			self.v.set_status('encoding_helper_statusbar_converted_from', 'Converted to UTF-8 from '+encoding)
-	
+
 	def on_error(self, file_name, encoding):
 		sublime.error_message('Unable to convert to UTF-8 from encoding "'+encoding+'" the file: \n'+file_name);
-	
+
 	def on_lookup_error(self, file_name, encoding):
 		sublime.error_message('The encoding "'+encoding+'" is unknown in this system.\n Unable to convert to UTF-8 the file: \n'+file_name);
 
