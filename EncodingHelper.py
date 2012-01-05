@@ -18,7 +18,16 @@ SETTINGS = sublime.load_settings('EncodingHelper.sublime-settings')
 
 class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 
-	def on_load(self, v):
+	def on_load(self, v, ok = True):
+
+		if not v:
+			return
+		if v.encoding() == 'Undefined' and ok:
+			# give time to sublime just one time
+			sublime.set_timeout(lambda:EncodingOnStatusBarListener().on_load(v, False), 120)
+			return
+		elif v.encoding() == 'Undefined' and not ok:
+			v.settings().set('encoding_helper_encoding_sublime', 'UTF-8')
 
 		# if enabled, show encoding on status bar
 		if bool(SETTINGS.get('show_encoding_on_status_bar', True)):
@@ -26,10 +35,18 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 			# mark as loading
 			v.settings().set('encoding_helper_loading', True)
 
+			if not v.settings().has('encoding_helper_encoding_sublime'):
+				v.settings().set('encoding_helper_encoding_sublime', v.encoding())
+
 			#has cached state?
 			if v.settings().has('encoding_helper_encoding'):
 				v.settings().erase('encoding_helper_loading')
-				v.set_status('encoding_helper_statusbar', v.settings().get('encoding_helper_encoding'))
+				encoding = v.settings().get('encoding_helper_encoding')
+				encoding_sublime = v.settings().get('encoding_helper_encoding_sublime')
+
+				v.set_status('encoding_helper_statusbar', encoding)
+				if encoding_sublime != '' and encoding_sublime != encoding and encoding != 'BINARY':
+					v.set_status('encoding_helper_statusbar_convertion_status', 'Opened as '+encoding_sublime+' (document maybe broken)')
 			else:
 				# is the file is there
 				file_name = v.file_name()
@@ -49,7 +66,8 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 			if v.settings().has('encoding_helper_loading'):
 				pass
 			else:
-				self.on_load(v)
+				if not v.is_loading():
+					self.on_load(v)
 		else:
 			v.erase_status('encoding_helper_statusbar')
 
@@ -152,12 +170,20 @@ class GuessEncoding(threading.Thread):
 		return False
 
 	def on_done(self, encoding):
-		if self.v != False:
+		if self.v:
 			self.v.settings().set('encoding_helper_encoding', encoding)
-			self.v.settings().erase('encoding_helper_loading')
 			self.v.set_status('encoding_helper_statusbar', encoding)
+
+			if not self.v.settings().has('encoding_helper_encoding_sublime'):
+				self.v.settings().set('encoding_helper_encoding_sublime', self.v.encoding())
+			encoding_sublime = self.v.settings().get('encoding_helper_encoding_sublime')
+
 			if encoding in SETTINGS.get('open_automatically_as_utf8', []) and self.v.is_dirty() == False:
 				ConvertToUTF8(self.file_name, encoding, self.v).start()
+			else:
+				if encoding_sublime != '' and encoding_sublime != encoding and encoding != 'BINARY':
+					self.v.set_status('encoding_helper_statusbar_convertion_status', 'Opened as '+encoding_sublime+' (document maybe broken)')
+			self.v.settings().erase('encoding_helper_loading')
 
 class Toutf8fromBestGuessCommand(sublime_plugin.WindowCommand):
 
@@ -237,14 +263,15 @@ class ConvertToUTF8(threading.Thread):
 			sublime.set_timeout(functools.partial(self.on_lookup_error, self.file_name, self.encoding), 0)
 
 	def on_done(self, content, encoding):
-		if self.v != False:
+		if self.v:
 			edit = self.v.begin_edit()
 			self.v.replace(edit, sublime.Region(0, self.v.size()), content);
 			self.v.end_edit(edit)
+			self.v.settings().set('encoding_helper_encoding_sublime', encoding)
 			self.v.settings().set('encoding_helper_encoding',  'UTF-8')
 			if bool(SETTINGS.get('show_encoding_on_status_bar', True)):
 				self.v.set_status('encoding_helper_statusbar', 'UTF-8')
-			self.v.set_status('encoding_helper_statusbar_converted_from', 'Converted to UTF-8 from '+encoding)
+			self.v.set_status('encoding_helper_statusbar_convertion_status', 'Converted to UTF-8 from '+encoding)
 
 	def on_error(self, file_name, encoding):
 		sublime.error_message('Unable to convert to UTF-8 from encoding "'+encoding+'" the file: \n'+file_name);
