@@ -43,7 +43,6 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 				v.settings().erase('encoding_helper_loading')
 				encoding = v.settings().get('encoding_helper_encoding')
 				encoding_sublime = v.settings().get('encoding_helper_encoding_sublime')
-
 				v.set_status('encoding_helper_statusbar', encoding)
 				if encoding_sublime != '' and encoding_sublime != encoding and encoding != 'BINARY':
 					v.set_status('encoding_helper_statusbar_convertion_status', 'Opened as '+encoding_sublime+' (document maybe broken)')
@@ -267,7 +266,7 @@ class ConvertToUTF8(threading.Thread):
 			edit = self.v.begin_edit()
 			self.v.replace(edit, sublime.Region(0, self.v.size()), content);
 			self.v.end_edit(edit)
-			self.v.settings().set('encoding_helper_encoding_sublime', encoding)
+			self.v.settings().set('encoding_helper_encoding_sublime', 'UTF-8')
 			self.v.settings().set('encoding_helper_encoding',  'UTF-8')
 			if bool(SETTINGS.get('show_encoding_on_status_bar', True)):
 				self.v.set_status('encoding_helper_statusbar', 'UTF-8')
