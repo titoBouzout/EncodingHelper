@@ -44,7 +44,7 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 				encoding = v.settings().get('encoding_helper_encoding')
 				encoding_sublime = v.settings().get('encoding_helper_encoding_sublime')
 				v.set_status('encoding_helper_statusbar', encoding)
-				if encoding_sublime != '' and encoding_sublime != encoding and encoding != 'BINARY':
+				if encoding_sublime != '' and encoding_sublime != encoding and encoding != 'BINARY' and encoding != 'Unknown':
 					v.set_status('encoding_helper_statusbar_convertion_status', 'Opened as '+encoding_sublime+' (document maybe broken)')
 			else:
 				# is the file is there
@@ -180,7 +180,7 @@ class GuessEncoding(threading.Thread):
 			if encoding in SETTINGS.get('open_automatically_as_utf8', []) and self.v.is_dirty() == False:
 				ConvertToUTF8(self.file_name, encoding, self.v).start()
 			else:
-				if encoding_sublime != '' and encoding_sublime != encoding and encoding != 'BINARY':
+				if encoding_sublime != '' and encoding_sublime != encoding and encoding != 'BINARY' and encoding != 'Unknown':
 					self.v.set_status('encoding_helper_statusbar_convertion_status', 'Opened as '+encoding_sublime+' (document maybe broken)')
 			self.v.settings().erase('encoding_helper_loading')
 
