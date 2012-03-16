@@ -3,10 +3,9 @@ import sublime, sublime_plugin
 import codecs
 import sys
 import os
-sys.path.append(os.path.join(sublime.packages_path(), 'EncodingHelper', 'chardet'))
+# sys.path.append(os.path.join(sublime.packages_path(), 'EncodingHelper', 'chardet'))
 from chardet.universaldetector import UniversalDetector
 import re
-import functools
 import threading
 import time
 
@@ -24,7 +23,7 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 			return
 		if v.encoding() == 'Undefined' and ok:
 			# give time to sublime just one time
-			sublime.set_timeout(lambda:EncodingOnStatusBarListener().on_load(v, False), 120)
+			sublime.set_timeout(lambda:self.on_load(v, False), 120)
 			return
 		elif v.encoding() == 'Undefined' and not ok:
 			v.settings().set('encoding_helper_encoding_sublime', 'UTF-8')
@@ -150,7 +149,7 @@ class GuessEncoding(threading.Thread):
 					encoding = workaround
 
 			del detector
-		sublime.set_timeout(functools.partial(self.callback, encoding), 0)
+		sublime.set_timeout(lambda:self.callback(encoding, confidence), 0)
 
 	def test_fallback_encodings(self, encodings = False):
 		if encodings == False:
@@ -168,9 +167,10 @@ class GuessEncoding(threading.Thread):
 				fp.close()
 		return False
 
-	def on_done(self, encoding):
+	def on_done(self, encoding, confidence):
 		if self.v:
 			self.v.settings().set('encoding_helper_encoding', encoding)
+			self.v.settings().set('encoding_helper_confidence', confidence)
 			self.v.set_status('encoding_helper_statusbar', encoding)
 
 			if not self.v.settings().has('encoding_helper_encoding_sublime'):
@@ -253,13 +253,13 @@ class ConvertToUTF8(threading.Thread):
 		try:
 			content = codecs.open(self.file_name, "rb", _encoding, errors='strict').read()
 			if len(content) != 0:
-				sublime.set_timeout(functools.partial(self.callback, content, self.encoding), 0)
+				sublime.set_timeout(lambda:self.callback(content, self.encoding), 0)
 		except UnicodeDecodeError, e:
 			print e
-			sublime.set_timeout(functools.partial(self.on_error, self.file_name, self.encoding), 0)
+			sublime.set_timeout(lambda:self.on_error(self.file_name, self.encoding), 0)
 		except LookupError, e:
 			print e
-			sublime.set_timeout(functools.partial(self.on_lookup_error, self.file_name, self.encoding), 0)
+			sublime.set_timeout(lambda:self.on_lookup_error(self.file_name, self.encoding), 0)
 
 	def on_done(self, content, encoding):
 		if self.v:
