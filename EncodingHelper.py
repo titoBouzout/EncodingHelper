@@ -69,7 +69,7 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 		else:
 			v.erase_status('encoding_helper_statusbar')
 
-SETTINGS.add_on_change('show_encoding_on_status_bar', lambda: EncodingOnStatusBarListener().on_load(sublime.active_window().active_view()))
+SETTINGS.add_on_change('reload', lambda: EncodingOnStatusBarListener().on_load(sublime.active_window().active_view()))
 
 class GuessEncoding(threading.Thread):
 
