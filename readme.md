@@ -5,7 +5,7 @@ Encoding Helper is a [Sublime Text](http://www.sublimetext.com/ ) plug-in which 
 
  * attempts to guess encoding of files
  * show encoding on status bar
- * show when the current document is maybe broken because was opened with an incorrect encoding
+ * show when the current document is maybe broken because was opened with an incorrect encoding (or just because there is an encoding missmatch)
  * convert to UTF-8 from a variete of encodings organized in a menu.
  * convert to UTF-8 quickly from guessed encoding via menuitem
  * convert to UTF-8 automatically when opening a file via some defined encodings found on User preferences
@@ -44,7 +44,7 @@ http://docs.python.org/library/codecs.html
 Installation
 ------------------
 
-Install this repository via "Package Control" http://wbond.net/sublime_packages/package_control
+To install for ST3, you should checkout to "st3" branch
 
 Source-code
 ------------------
