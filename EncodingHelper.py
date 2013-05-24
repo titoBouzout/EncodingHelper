@@ -28,7 +28,7 @@ class Pref:
 				encoding_list.append(encoding.upper())
 		Pref.fallback_encodings = encoding_list
 		if not Pref.fallback_encodings:
-			Pref.fallback_encodings = ["UTF-8", "ISO-8859-1", 'SHIFT-JIS', 'WINDOWS-1252', 'GBK', 'WINDOWS-1256'];
+			Pref.fallback_encodings = ["ISO-8859-1", "UTF-8"];
 
 		open_automatically_as_utf8 = []
 		for encoding in s.get('open_automatically_as_utf8', []):
@@ -97,7 +97,6 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 			if v.settings().has('encoding_helper_encoding'):
 				self.on_encodings_detected(v);
 			else:
-				v.settings().set('encoding_helper_encoding', 'Detecting encoding…')
 
 				# if the file is not there, just give up
 				file_name = v.file_name()
@@ -302,11 +301,6 @@ class EncodingHelperWriteToViewCommand(sublime_plugin.TextCommand):
 		view.sel().add(sublime.Region(0))
 		view.end_edit(edit)
 
-def encoding_normalize_for_comparation(encoding):
-	if '(' in encoding:
-		encoding = encoding.split('(')[1]
-	return encoding.lower().replace('with bom', '').strip().replace(')', '').replace('-', '').replace('_', '').strip()
-
 def encoding_normalize_for_display(encoding):
 	if '(' in encoding:
 		encoding = encoding.split('(')[1]
@@ -316,3 +310,13 @@ def encoding_normalize_for_display(encoding):
 		except:
 			pass
 	return encoding.lower().strip().replace(')', '').replace(' ', '-').replace('_', '-').strip().upper().replace('HEXADECIMAL', 'Hexadecimal').replace('-WITH-BOM', ' with BOM').replace('-LE', ' LE').replace('-BE', ' BE').replace('ISO', 'ISO-').replace('CP', 'CP-');
+
+def encoding_normalize_for_comparation(encoding):
+	if '(' in encoding:
+		encoding = encoding.split('(')[1]
+	if encoding != 'Hexadecimal' and encoding != 'BINARY' and encoding[:3] != 'UTF':
+		try:
+			encoding = codecs.lookup(encoding).name;
+		except:
+			pass
+	return encoding.strip().upper().replace(' ', '-').replace('_', '-').replace('-WITH-BOM', '').replace('-LE', '').replace('-BE', '').replace(')', '').replace('-', '').replace('_', '').strip();
