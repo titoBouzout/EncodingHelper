@@ -43,29 +43,31 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 	# we compare the detected encoding of this package with the detected encoding by ST
 	def on_encodings_detected(self, v, ok = True):
 		# we give time to ST to "detect" or use the "fallback encoding".
-		if v.encoding() == 'Undefined' and ok:
-			sublime.set_timeout(lambda:self.on_encodings_detected(v, False), 250)
-			return
-		elif v.encoding() == 'Undefined' and not ok:
-			v.settings().set('encoding_helper_encoding_ST', 'UTF-8')
+		if v.encoding() == 'Undefined' and v.is_loading():
+			encoding_sublime = 'Loading…'
+		elif v.encoding() == 'Undefined' and not v.is_loading():
+			encoding_sublime = 'UTF-8'
 		# ok, sublime was able to set some encoding to this file
 		else:
-			v.settings().set('encoding_helper_encoding_ST', v.encoding())
+			encoding_sublime = v.encoding()
 
 		# here code, "document maybe broken"
-		encoding_sublime = v.settings().get('encoding_helper_encoding_ST')
 		encoding_encohelp = v.settings().get('encoding_helper_encoding') or ''
 		encoding_converted = v.settings().get('encoding_helper_converted') or ''
 
 		if encoding_sublime == 'Hexadecimal' and encoding_encohelp == 'BINARY':
 			encoding_encohelp = ''
 
-		if encoding_converted != None and encoding_converted:
-			v.set_status('encoding_helper_statusbar', "Converted to UTF-8 from "+encoding_converted)
-		elif encoding_sublime.replace(' ', '').replace('-', '').replace('_', '').lower().strip() != encoding_encohelp.replace(' ', '').replace('-', '').replace('_', '').lower().strip() and encoding_encohelp != '' and encoding_encohelp != 'Unknown' and encoding_encohelp != 'Detecting encoding…':
-			v.set_status('encoding_helper_statusbar', 'Opened as '+encoding_sublime+', detected '+encoding_encohelp+' (document maybe broken)')
+		if encoding_encohelp == 'Detecting encoding…':
+			v.set_status('encoding_helper_statusbar', 'Detecting encoding…')
+		elif encoding_converted != None and encoding_converted:
+			v.set_status('encoding_helper_statusbar', "Converted to UTF-8 from "+encoding_normalize_for_display(encoding_converted))
+		elif encoding_sublime != 'Loading…' and encoding_encohelp != '' and encoding_encohelp != 'Unknown' and encoding_encohelp != 'Detecting encoding…' and encoding_normalize_for_comparation(encoding_sublime) != encoding_normalize_for_comparation(encoding_encohelp):
+			v.set_status('encoding_helper_statusbar', 'Opened as '+encoding_normalize_for_display(encoding_sublime)+', detected '+encoding_normalize_for_display(encoding_encohelp)+' (document maybe broken)')
+		elif encoding_sublime != 'Loading…' :
+			v.set_status('encoding_helper_statusbar', encoding_normalize_for_display(encoding_sublime))
 		else:
-			v.set_status('encoding_helper_statusbar', encoding_sublime)
+			v.set_status('encoding_helper_statusbar', encoding_normalize_for_display(encoding_encohelp))
 
 	# sublime may knows the encoding of the loaded file at on_load time
 	def on_load(self, v):
@@ -95,15 +97,15 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 			if v.settings().has('encoding_helper_encoding'):
 				self.on_encodings_detected(v);
 			else:
-				v.settings().set('encoding_helper_encoding', '')
+				v.settings().set('encoding_helper_encoding', 'Detecting encoding…')
 
 				# if the file is not there, just give up
 				file_name = v.file_name()
 				if not file_name or file_name == '' or os.path.isfile(file_name) == False:
+					v.settings().set('encoding_helper_encoding', '')
 					self.on_encodings_detected(v);
 				#guess
 				else:
-					v.settings().set('encoding_helper_encoding', 'Detecting encoding…')
 					v.set_status('encoding_helper_statusbar', 'Detecting encoding…');
 
 					confidence = 0
@@ -154,11 +156,11 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 					if v:
 						if encoding == 'ASCII':
 							encoding = 'UTF-8'
+						v.settings().set('encoding_helper_encoding', encoding)
+						self.on_encodings_detected(v);
 						if encoding != '' and encoding != 'UTF-8' and encoding in Pref.open_automatically_as_utf8 and v.is_dirty() == False:
+							v.set_status('encoding_helper_statusbar', 'Converting to '+encoding_normalize_for_display(encoding)+'…');
 							ConvertToUTF8(v, file_name, encoding).start()
-						elif v:
-							v.settings().set('encoding_helper_encoding', encoding)
-							self.on_encodings_detected(v);
 
 class Toutf8fromBestGuessCommand(sublime_plugin.WindowCommand):
 
@@ -295,3 +297,18 @@ class EncodingHelperWriteToViewCommand(sublime_plugin.TextCommand):
 		view.sel().clear()
 		view.sel().add(sublime.Region(0))
 		view.end_edit(edit)
+
+def encoding_normalize_for_comparation(encoding):
+	if '(' in encoding:
+		encoding = encoding.split('(')[1]
+	return encoding.lower().replace('with bom', '').strip().replace(')', '').replace('-', '').replace('_', '').strip()
+
+def encoding_normalize_for_display(encoding):
+	if '(' in encoding:
+		encoding = encoding.split('(')[1]
+	if encoding != 'Hexadecimal' and encoding != 'BINARY' and encoding[:3] != 'UTF':
+		try:
+			encoding = codecs.lookup(encoding).name;
+		except:
+			pass
+	return encoding.lower().strip().replace(')', '').replace(' ', '-').replace('_', '-').strip().upper().replace('HEXADECIMAL', 'Hexadecimal').replace('-WITH-BOM', ' with BOM').replace('-LE', ' LE').replace('-BE', ' BE').replace('ISO', 'ISO-').replace('CP', 'CP-');
