@@ -57,9 +57,12 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 		encoding_encohelp = v.settings().get('encoding_helper_encoding') or ''
 		encoding_converted = v.settings().get('encoding_helper_converted') or ''
 
+		if encoding_sublime == 'Hexadecimal' and encoding_encohelp == 'BINARY':
+			encoding_encohelp = ''
+
 		if encoding_converted != None and encoding_converted:
 			v.set_status('encoding_helper_statusbar', "Converted to UTF-8 from "+encoding_converted)
-		elif encoding_sublime.replace(' ', '').replace('-', '').replace('_', '').lower().strip() != encoding_encohelp.replace(' ', '').replace('-', '').replace('_', '').lower().strip() and encoding_encohelp != '' and encoding_encohelp != 'BINARY' and encoding_encohelp != 'Unknown' and encoding_encohelp != 'Detecting encoding…':
+		elif encoding_sublime.replace(' ', '').replace('-', '').replace('_', '').lower().strip() != encoding_encohelp.replace(' ', '').replace('-', '').replace('_', '').lower().strip() and encoding_encohelp != '' and encoding_encohelp != 'Unknown' and encoding_encohelp != 'Detecting encoding…':
 			v.set_status('encoding_helper_statusbar', 'Opened as '+encoding_sublime+', detected '+encoding_encohelp+' (document maybe broken)')
 		else:
 			v.set_status('encoding_helper_statusbar', encoding_sublime)
