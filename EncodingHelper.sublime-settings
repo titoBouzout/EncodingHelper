@@ -3,7 +3,7 @@
 	"show_encoding_on_status_bar" : true,
 
 	// Additional encodings to test when no acurrated guess can be done
-	"fallback_encodings": [ "UTF-8", "ISO-8859-1" ],
+	"fallback_encodings": [ ],
 
 	// Automatically opens as UTF-8 the following encodings list
 	// NOTE: Encoding detection is not acurrated

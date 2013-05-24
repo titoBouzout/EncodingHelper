@@ -243,9 +243,13 @@ class ConvertToUTF8(threading.Thread):
 			EncodingOnStatusBarListener().on_encodings_detected(self.v);
 
 	def on_error(self, file_name, encoding):
+		self.v.settings().set('encoding_helper_encoding', encoding)
+		EncodingOnStatusBarListener().on_encodings_detected(self.v);
 		sublime.error_message('Unable to convert to UTF-8 from encoding "'+encoding+'" the file: \n'+file_name);
 
 	def on_lookup_error(self, file_name, encoding):
+		self.v.settings().set('encoding_helper_encoding', encoding)
+		EncodingOnStatusBarListener().on_encodings_detected(self.v);
 		sublime.error_message('The encoding "'+encoding+'" is unknown in this system.\n Unable to convert to UTF-8 the file: \n'+file_name);
 
 def maybe_binary(file_name):
