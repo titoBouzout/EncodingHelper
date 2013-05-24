@@ -232,7 +232,11 @@ class ConvertToUTF8(threading.Thread):
 	def run(self):
 		_encoding = self.encoding.lower()
 		try:
-			content = codecs.open(self.file_name, "rb", _encoding, errors='strict').read()
+			__encoding = codecs.lookup(_encoding).name
+		except:
+			__encoding = _encoding;
+		try:
+			content = open(self.file_name, "r", encoding=__encoding, errors='strict').read()
 			if len(content) != 0:
 				sublime.set_timeout(lambda:self.callback(content, self.encoding), 0)
 		except LookupError:
