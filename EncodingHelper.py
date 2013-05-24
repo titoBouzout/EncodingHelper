@@ -66,20 +66,23 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 
 	# sublime may knows the encoding of the loaded file at on_load time
 	def on_load(self, v):
-		self.on_encodings_detected(v);
+		if not v.settings().get('is_widget'):
+			self.on_encodings_detected(v);
 
 	def on_post_save_async(self, v):
-		v.settings().erase('encoding_helper_converted')
-		v.settings().erase('encoding_helper_encoding')
-		self.on_load_async(v);
+		if not v.settings().get('is_widget'):
+			v.settings().erase('encoding_helper_converted')
+			v.settings().erase('encoding_helper_encoding')
+			self.on_load_async(v);
 
 	def on_activated_async(self, v):
-		#v.settings().erase('encoding_helper_encoding')
-		self.on_load_async(v);
+		if not v.settings().get('is_widget'):
+			#v.settings().erase('encoding_helper_encoding')
+			self.on_load_async(v);
 
 	# try to guess the encoding
 	def on_load_async(self, v):
-		if not v:
+		if not v or v.settings().get('is_widget'):
 			return
 
 		# if enabled, show encoding on status bar
@@ -106,6 +109,9 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 						encoding = 'BINARY'
 						confidence = 1
 					elif size > 1048576 and maybe_binary(file_name):
+						encoding = 'BINARY'
+						confidence = 0.7
+					elif maybe_binary(file_name):
 						encoding = 'BINARY'
 						confidence = 0.7
 					elif size > 1048576: # skip files > 1Mb
@@ -246,8 +252,9 @@ def maybe_binary(file_name):
 	fp = open(file_name, 'rb')
 	line = fp.read(500);
 	read = 500
+	null_char = '\x00'.encode();
 	while line != '':
-		if '\0' in line:
+		if null_char in line:
 			fp.close()
 			return True
 		read += 8000
