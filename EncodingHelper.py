@@ -18,6 +18,7 @@ def plugin_loaded():
 	Pref.load();
 	s.add_on_change('reload', lambda:Pref.load())
 	EncodingOnStatusBarListener().init_();
+
 class Pref:
 	def load(self):
 		Pref.show_encoding_on_status_bar = bool(s.get('show_encoding_on_status_bar', True))
@@ -27,7 +28,7 @@ class Pref:
 			if encoding != '':
 				encoding_list.append(encoding.upper())
 		Pref.fallback_encodings = encoding_list
-		if not Pref.fallback_encodings:
+		if not Pref.fallback_encodings or Pref.fallback_encodings == ["UTF-8"]:
 			Pref.fallback_encodings = ["UTF-8", "ISO-8859-1"];
 
 		open_automatically_as_utf8 = []
@@ -132,10 +133,16 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 						encoding = ''
 
 						if size < 666:
-							fallback = test_fallback_encodings(v, file_name)
+							fallback = test_fallback_encodings(file_name)
 							fallback_processed = True
 							if fallback != False:
 								encoding = fallback
+
+						if not encoding:
+							fallback = test_fallback_encodings(file_name, ["UTF-8"])
+							if fallback != False:
+								encoding = fallback
+
 						if not encoding:
 							detector = UniversalDetector()
 							fp = open(file_name, 'rb')
@@ -152,7 +159,7 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 							del detector
 						if encoding == None or encoding == 'NONE' or encoding == '' or encoding == 'Unknown' or confidence < 0.7:
 							if not fallback_processed:
-								fallback = test_fallback_encodings(v, file_name)
+								fallback = test_fallback_encodings(file_name)
 							if fallback != False:
 								encoding = fallback
 
@@ -283,7 +290,7 @@ def maybe_binary(file_name):
 	fp.close()
 	return False
 
-def test_fallback_encodings(v, file_name, encodings = False):
+def test_fallback_encodings(file_name, encodings = False):
 	if encodings == False:
 		encodings = Pref.fallback_encodings
 	for encoding in encodings:
