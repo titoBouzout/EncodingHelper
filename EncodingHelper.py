@@ -17,18 +17,18 @@ def plugin_loaded():
 	Pref = Pref()
 	Pref.load();
 	s.add_on_change('reload', lambda:Pref.load())
-
+	EncodingOnStatusBarListener().init_();
 class Pref:
 	def load(self):
 		Pref.show_encoding_on_status_bar = bool(s.get('show_encoding_on_status_bar', True))
 
-		encoding_list = []
+		encoding_list = ["UTF-8"]
 		for encoding in s.get('fallback_encodings', []):
 			if encoding != '':
 				encoding_list.append(encoding.upper())
 		Pref.fallback_encodings = encoding_list
 		if not Pref.fallback_encodings:
-			Pref.fallback_encodings = ["ISO-8859-1", "UTF-8"];
+			Pref.fallback_encodings = ["UTF-8", "ISO-8859-1"];
 
 		open_automatically_as_utf8 = []
 		for encoding in s.get('open_automatically_as_utf8', []):
@@ -37,6 +37,11 @@ class Pref:
 		Pref.open_automatically_as_utf8 = open_automatically_as_utf8
 
 class EncodingOnStatusBarListener(sublime_plugin.EventListener):
+
+	def init_(self):
+		self.on_load(sublime.active_window().active_view())
+		for window in  sublime.windows():
+			self.on_load(window.active_view())
 
 	# this function is called to update the statusbar
 	# we need to know wich encoding ST is giving to the file in order to tell: "document maybe broken"
@@ -248,6 +253,7 @@ class ConvertToUTF8(threading.Thread):
 			write_to_view(self.v, content);
 			self.v.settings().set('encoding_helper_converted', encoding)
 			self.v.settings().set('encoding_helper_encoding', 'UTF-8')
+			self.v.set_encoding('UTF-8');
 			EncodingOnStatusBarListener().on_encodings_detected(self.v);
 
 	def on_error(self, file_name, encoding):
