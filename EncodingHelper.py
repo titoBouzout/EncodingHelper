@@ -22,12 +22,16 @@ def plugin_loaded():
 class Pref:
 	def load(self):
 		Pref.show_encoding_on_status_bar = bool(s.get('show_encoding_on_status_bar', True))
-
-		encoding_list = ["UTF-8"]
+		import locale
+		encoding_data_lang, encoding_data_encoding = locale.getdefaultlocale()
+		encoding_list = []
+		encoding_list.append("UTF-8")
+		if encoding_data_encoding:
+			encoding_list.append(encoding_data_encoding);
 		for encoding in s.get('fallback_encodings', []):
 			if encoding != '':
 				encoding_list.append(encoding.upper())
-		Pref.fallback_encodings = encoding_list
+		Pref.fallback_encodings = list(set(encoding_list))
 		if not Pref.fallback_encodings or Pref.fallback_encodings == ["UTF-8"]:
 			Pref.fallback_encodings = ["UTF-8", "ISO-8859-1"];
 
