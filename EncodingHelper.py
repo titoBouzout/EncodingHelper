@@ -24,22 +24,19 @@ class Pref:
 		Pref.show_encoding_on_status_bar = bool(s.get('show_encoding_on_status_bar', True))
 		import locale
 		encoding_data_lang, encoding_data_encoding = locale.getdefaultlocale()
-		encoding_list = []
-		encoding_list.append("UTF-8")
+		Pref.fallback_encodings = []
+		Pref.fallback_encodings.append("UTF-8")
 		if encoding_data_encoding:
-			encoding_list.append(encoding_data_encoding);
+			Pref.fallback_encodings.append(encoding_data_encoding);
 		for encoding in s.get('fallback_encodings', []):
 			if encoding != '':
-				encoding_list.append(encoding.upper())
-		Pref.fallback_encodings = list(set(encoding_list))
+				Pref.fallback_encodings.append(encoding.upper())
 		if not Pref.fallback_encodings or Pref.fallback_encodings == ["UTF-8"]:
 			Pref.fallback_encodings = ["UTF-8", "ISO-8859-1"];
-
-		open_automatically_as_utf8 = []
+		Pref.open_automatically_as_utf8 = []
 		for encoding in s.get('open_automatically_as_utf8', []):
 			if encoding != '':
-				open_automatically_as_utf8.append(encoding.upper())
-		Pref.open_automatically_as_utf8 = open_automatically_as_utf8
+				Pref.open_automatically_as_utf8.append(encoding.upper())
 
 class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 
