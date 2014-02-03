@@ -1,3 +1,5 @@
+***[Sublime Text 3+](http://www.sublimetext.com/) Package. Install via an updated version of  [Package Control 2+](https://sublime.wbond.net/installation). Just **DON'T** install manually.
+
 Description
 ------------------
 
@@ -47,11 +49,6 @@ http://www.mauvecloud.net/charsets/index.html
 
 codecs:
 http://docs.python.org/library/codecs.html
-
-Installation
-------------------
-
-To install for ST3, you should checkout to "st3" branch
 
 Source-code
 ------------------
