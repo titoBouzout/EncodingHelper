@@ -248,7 +248,7 @@ class ConvertToUTF8(threading.Thread):
 		except:
 			__encoding = _encoding;
 		try:
-			content = open(self.file_name, "r", encoding=__encoding, errors='strict').read()
+			content = open(self.file_name, "r", encoding=__encoding, errors='strict', newline='').read()
 			if len(content) != 0:
 				sublime.set_timeout(lambda:self.callback(content, self.encoding), 0)
 		except LookupError:
