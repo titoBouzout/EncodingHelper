@@ -6,7 +6,6 @@ Description
 Encoding Helper is a [Sublime Text](http://www.sublimetext.com/ ) plug-in which provides the following features:
 
  * attempts to guess encoding of files
- * show encoding on status bar
  * show when the current document is maybe broken because was opened with an incorrect encoding (or just because there is an encoding mismatch)
  * convert to UTF-8 from a variete of encodings organized in a menu.
  * convert to UTF-8 quickly from guessed encoding via menuitem

@@ -1,7 +1,4 @@
 {
-	// To show encoding on status bar
-	"show_encoding_on_status_bar" : true,
-
 	// Additional encodings to test when no acurrated guess can be done
 	"fallback_encodings": [], //example ["ISO-8859-1", "etc"]
 
