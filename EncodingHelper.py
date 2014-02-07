@@ -21,7 +21,6 @@ def plugin_loaded():
 
 class Pref:
 	def load(self):
-		Pref.show_encoding_on_status_bar = bool(s.get('show_encoding_on_status_bar', True))
 		import locale
 		encoding_data_lang, encoding_data_encoding = locale.getdefaultlocale()
 		Pref.fallback_encodings = []
@@ -72,9 +71,9 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 		elif encoding_sublime != 'Loading…' and encoding_encohelp != '' and encoding_encohelp != 'Unknown' and encoding_encohelp != 'Detecting encoding…' and encoding_normalize_for_comparation(encoding_sublime) != encoding_normalize_for_comparation(encoding_encohelp):
 			v.set_status('encoding_helper_statusbar', 'Opened as '+encoding_normalize_for_display(encoding_sublime)+', detected '+encoding_normalize_for_display(encoding_encohelp)+' (document maybe broken)')
 		elif encoding_sublime != 'Loading…' :
-			v.set_status('encoding_helper_statusbar', encoding_normalize_for_display(encoding_sublime))
+			v.set_status('encoding_helper_statusbar', encoding_normalize_for_display(encoding_sublime) if not 'UTF-8' else '')
 		else:
-			v.set_status('encoding_helper_statusbar', encoding_normalize_for_display(encoding_encohelp))
+			v.set_status('encoding_helper_statusbar', encoding_normalize_for_display(encoding_encohelp) if not 'UTF-8' else '')
 
 	# sublime may knows the encoding of the loaded file at on_load time
 	def on_load(self, v):
@@ -97,82 +96,79 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 		if not v or v.settings().get('is_widget'):
 			return
 
-		# if enabled, show encoding on status bar
-		if Pref.show_encoding_on_status_bar:
+		#has cached state?
+		if v.settings().has('encoding_helper_encoding'):
+			self.on_encodings_detected(v);
+		else:
 
-			#has cached state?
-			if v.settings().has('encoding_helper_encoding'):
+			# if the file is not there, just give up
+			file_name = v.file_name()
+			if not file_name or file_name == '' or os.path.isfile(file_name) == False:
+				v.settings().set('encoding_helper_encoding', '')
 				self.on_encodings_detected(v);
+			#guess
 			else:
+				v.set_status('encoding_helper_statusbar', 'Detecting encoding…');
 
-				# if the file is not there, just give up
-				file_name = v.file_name()
-				if not file_name or file_name == '' or os.path.isfile(file_name) == False:
-					v.settings().set('encoding_helper_encoding', '')
-					self.on_encodings_detected(v);
-				#guess
+				confidence = 0
+				size = os.stat(file_name).st_size
+				if BINARY.search(file_name):
+					encoding = 'BINARY'
+					confidence = 1
+				elif size > 1048576 and maybe_binary(file_name):
+					encoding = 'BINARY'
+					confidence = 0.7
+				elif maybe_binary(file_name):
+					encoding = 'BINARY'
+					confidence = 0.7
+				elif size > 1048576: # skip files > 1Mb
+					encoding = 'Unknown'
+					confidence = 1
 				else:
-					v.set_status('encoding_helper_statusbar', 'Detecting encoding…');
+					fallback_processed = False
+					fallback = False
+					encoding = ''
 
-					confidence = 0
-					size = os.stat(file_name).st_size
-					if BINARY.search(file_name):
-						encoding = 'BINARY'
-						confidence = 1
-					elif size > 1048576 and maybe_binary(file_name):
-						encoding = 'BINARY'
-						confidence = 0.7
-					elif maybe_binary(file_name):
-						encoding = 'BINARY'
-						confidence = 0.7
-					elif size > 1048576: # skip files > 1Mb
-						encoding = 'Unknown'
-						confidence = 1
-					else:
-						fallback_processed = False
-						fallback = False
-						encoding = ''
+					if size < 666:
+						fallback = test_fallback_encodings(file_name)
+						fallback_processed = True
+						if fallback != False:
+							encoding = fallback
 
-						if size < 666:
+					if not encoding:
+						fallback = test_fallback_encodings(file_name, ["UTF-8"])
+						if fallback != False:
+							encoding = fallback
+
+					if not encoding:
+						detector = UniversalDetector()
+						fp = open(file_name, 'rb')
+						detector.feed(fp.read())
+						fp.close()
+						detector.close()
+
+						if detector.done:
+							encoding = str(detector.result['encoding']).upper()
+							confidence = detector.result['confidence']
+						else:
+							encoding = 'Unknown'
+							confidence = 1
+						del detector
+					if encoding == None or encoding == 'NONE' or encoding == '' or encoding == 'Unknown' or confidence < 0.7:
+						if not fallback_processed:
 							fallback = test_fallback_encodings(file_name)
-							fallback_processed = True
-							if fallback != False:
-								encoding = fallback
-
-						if not encoding:
-							fallback = test_fallback_encodings(file_name, ["UTF-8"])
-							if fallback != False:
-								encoding = fallback
-
-						if not encoding:
-							detector = UniversalDetector()
-							fp = open(file_name, 'rb')
-							detector.feed(fp.read())
-							fp.close()
-							detector.close()
-
-							if detector.done:
-								encoding = str(detector.result['encoding']).upper()
-								confidence = detector.result['confidence']
-							else:
-								encoding = 'Unknown'
-								confidence = 1
-							del detector
-						if encoding == None or encoding == 'NONE' or encoding == '' or encoding == 'Unknown' or confidence < 0.7:
-							if not fallback_processed:
-								fallback = test_fallback_encodings(file_name)
-							if fallback != False:
-								encoding = fallback
+						if fallback != False:
+							encoding = fallback
 
 
-					if v:
-						if encoding == 'ASCII':
-							encoding = 'UTF-8'
-						v.settings().set('encoding_helper_encoding', encoding)
-						self.on_encodings_detected(v);
-						if encoding != '' and encoding != 'UTF-8' and encoding in Pref.open_automatically_as_utf8 and v.is_dirty() == False:
-							v.set_status('encoding_helper_statusbar', 'Converting to '+encoding_normalize_for_display(encoding)+'…');
-							ConvertToUTF8(v, file_name, encoding).start()
+				if v:
+					if encoding == 'ASCII':
+						encoding = 'UTF-8'
+					v.settings().set('encoding_helper_encoding', encoding)
+					self.on_encodings_detected(v);
+					if encoding != '' and encoding != 'UTF-8' and encoding in Pref.open_automatically_as_utf8 and v.is_dirty() == False:
+						v.set_status('encoding_helper_statusbar', 'Converting to '+encoding_normalize_for_display(encoding)+'…');
+						ConvertToUTF8(v, file_name, encoding).start()
 
 class Toutf8fromBestGuessCommand(sublime_plugin.WindowCommand):
 
