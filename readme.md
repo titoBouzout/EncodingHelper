@@ -13,7 +13,7 @@ Encoding Helper is a [Sublime Text](http://www.sublimetext.com/ ) plug-in which 
 
 You should know that attempt to guess the encoding of a file is hard and the results for some encodings is not 100% accurate. Also, is a task that consume CPU, for this reason this plug-in includes a lot of optimizations.
 
-<img src="http://dl.dropbox.com/u/9303546/SublimeText/EncodingHelper/screenshot.png" border="0"/>
+![Screenshot](https://raw.github.com/philostler/EncodingHelper/master/screenshot.png)
 
 UTF-8
 ------------------
