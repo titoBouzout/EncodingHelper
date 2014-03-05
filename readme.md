@@ -1,4 +1,6 @@
-***[Sublime Text 3+](http://www.sublimetext.com/) Package. Install via an updated version of  [Package Control 2+](https://sublime.wbond.net/installation). Just **DON'T** install manually.
+***Important notice for [Sublime Text 3+](http://www.sublimetext.com/) users!***<br/>
+* _Install via an updated version of  [Package Control 2+](https://sublime.wbond.net/installation), **DON'T** install manually_
+* _Since ST3 build 3057, the encoding menu has been moved to the status bar. See [www.sublimetext.com/3dev](http://www.sublimetext.com/3dev) for settings to show encoding and line endings_
 
 Description
 ------------------
@@ -13,7 +15,7 @@ Encoding Helper is a [Sublime Text](http://www.sublimetext.com/ ) plug-in which 
 
 You should know that attempt to guess the encoding of a file is hard and the results for some encodings is not 100% accurate. Also, is a task that consume CPU, for this reason this plug-in includes a lot of optimizations.
 
-<img src="http://dl.dropbox.com/u/9303546/SublimeText/EncodingHelper/screenshot.png" border="0"/>
+![Screenshot](https://raw.github.com/philostler/EncodingHelper/readme_update/screenshot.png)
 
 UTF-8
 ------------------
