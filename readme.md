@@ -54,7 +54,7 @@ http://docs.python.org/library/codecs.html
 Source-code
 ------------------
 
-https://github.com/SublimeText/EncodingHelper
+https://github.com/titoBouzout/EncodingHelper
 
 Forum Thread
 ------------------
