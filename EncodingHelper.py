@@ -11,6 +11,9 @@ import time
 # don't parse binary files, just mark these as binary
 BINARY = re.compile('\.(apng|png|jpg|gif|jpeg|bmp|psd|ai|cdr|ico|cache|sublime-package|eot|svgz|ttf|woff|zip|tar|gz|rar|bz2|jar|xpi|mov|mpeg|avi|mpg|flv|wmv|mp3|wav|aif|aiff|snd|wma|asf|asx|pcm|pdf|doc|docx|xls|xlsx|ppt|pptx|rtf|sqlite|sqlitedb|fla|swf|exe)$', re.I);
 
+s = {}
+Pref = {}
+
 def plugin_loaded():
 	global s, Pref
 	s = sublime.load_settings('EncodingHelper.sublime-settings')
@@ -244,7 +247,7 @@ class ConvertToUTF8(threading.Thread):
 		except:
 			__encoding = _encoding;
 		try:
-			content = open(self.file_name, "r", encoding=__encoding, errors='strict', newline='').read()
+			content = open(self.file_name, "r", encoding=__encoding, errors='strict', newline=None).read()
 			if len(content) != 0:
 				sublime.set_timeout(lambda:self.callback(content, self.encoding), 0)
 		except LookupError:
