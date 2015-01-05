@@ -41,14 +41,14 @@ def plugin_loaded():
 class Pref:
 	def load(self):
 		import locale
-		encoding_data_lang, encoding_data_encoding = locale.getdefaultlocale()
 		Pref.tmp_cache_fallback_encodings = {}
 		Pref.fallback_encodings = []
 		Pref.fallback_encodings.append("UTF-8")
+		encoding_data_lang, encoding_data_encoding = locale.getdefaultlocale()
 		if encoding_data_encoding:
-			Pref.fallback_encodings.append(encoding_data_encoding);
+			Pref.fallback_encodings.append(encoding_data_encoding.upper());
 		for encoding in s.get('fallback_encodings', []):
-			if encoding != '':
+			if encoding:
 				Pref.fallback_encodings.append(encoding.upper())
 		if not Pref.fallback_encodings or Pref.fallback_encodings == ["UTF-8"]:
 			Pref.fallback_encodings = ["UTF-8", "ISO-8859-1"];
@@ -56,6 +56,15 @@ class Pref:
 		for encoding in s.get('open_automatically_as_utf8', []):
 			if encoding != '':
 				Pref.open_automatically_as_utf8.append(encoding.upper())
+
+		Pref.fallback_encodings = unique(Pref.fallback_encodings)
+		Pref.open_automatically_as_utf8 = unique(Pref.open_automatically_as_utf8)
+
+		if debug:
+			print('Pref.fallback_encodings')
+			print(Pref.fallback_encodings)
+			print('Pref.open_automatically_as_utf8')
+			print(Pref.open_automatically_as_utf8)
 
 class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 
@@ -89,7 +98,7 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 		elif encoding_converted != None and encoding_converted:
 			v.set_status('encoding_helper_statusbar', "Converted to UTF-8 from "+encoding_normalize_for_display(encoding_converted))
 		elif encoding_sublime != 'Loading…' and encoding_encohelp != '' and encoding_encohelp != 'Unknown' and encoding_encohelp != 'Detecting encoding…' and encoding_normalize_for_comparation(encoding_sublime) != encoding_normalize_for_comparation(encoding_encohelp):
-			v.set_status('encoding_helper_statusbar', 'Opened as '+encoding_normalize_for_display(encoding_sublime)+', detected '+encoding_normalize_for_display(encoding_encohelp)+' (document maybe broken)')
+			v.set_status('encoding_helper_statusbar', 'Opened as '+encoding_normalize_for_display(encoding_sublime)+' detected '+encoding_normalize_for_display(encoding_encohelp)+' (document maybe broken)')
 		elif encoding_sublime != 'Loading…' :
 			v.set_status('encoding_helper_statusbar', encoding_normalize_for_display(encoding_sublime) if not 'UTF-8' else '')
 		else:
@@ -133,56 +142,44 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 			#guess
 			else:
 				v.set_status('encoding_helper_statusbar', 'Detecting encoding…');
-				confidence = 0
-				size = os.stat(file_name).st_size
+				encoding = ''
+
 				if BINARY.search(file_name):
 					encoding = 'BINARY'
-					confidence = 1
-				elif size > 1048576 and maybe_binary(file_name):
-					encoding = 'BINARY'
-					confidence = 0.7
-				elif maybe_binary(file_name):
-					encoding = 'BINARY'
-					confidence = 0.7
-				elif size > 1048576: # skip files > 1Mb
-					encoding = 'Unknown'
-					confidence = 1
 				else:
-					fallback_processed = False
-					fallback = False
-					encoding = ''
-					if size < 666:
+					size = os.stat(file_name).st_size
+					maybe_binary_r = maybe_binary(file_name)
+					if size > 1048576 and maybe_binary_r:
+						encoding = 'BINARY'
+					elif maybe_binary_r:
+						encoding = 'BINARY'
+					elif size > 1048576: # skip files > 1Mb
+						encoding = 'Unknown'
+					else:
+						confidence = 1
 						fallback = test_fallback_encodings(file_name)
-						fallback_processed = True
-						if fallback != False:
+						if fallback:
 							encoding = fallback
 
-					if not encoding:
-						fallback = test_fallback_encodings(file_name, ["UTF-8"])
-						if fallback != False:
-							encoding = fallback
-					if not encoding:
-						if debug:
-							print('UniversalDetector::'+file_name)
-						detector = UniversalDetector()
-						fp = open(file_name, 'rb')
-						detector.feed(fp.read(209715))
-						fp.close()
-						detector.close()
-						if detector.done:
-							encoding = str(detector.result['encoding']).upper()
-							confidence = detector.result['confidence']
-						else:
-							encoding = 'Unknown'
-							confidence = 1
-						del detector
-					if encoding == None or encoding == 'NONE' or encoding == '' or encoding == 'Unknown' or confidence < 0.7:
-						if not fallback_processed:
+						if not encoding:
+							if debug:
+								print('UniversalDetector::Start::'+str(time.time() - begin)+'::'+file_name)
+							detector = UniversalDetector()
+							fp = open(file_name, 'rb')
+							detector.feed(fp.read(209715))
+							fp.close()
+							detector.close()
+							if detector.done:
+								encoding = str(detector.result['encoding']).upper()
+								confidence = detector.result['confidence']
+							else:
+								encoding = 'Unknown'
+							if debug:
+								print('UniversalDetector::End::'+str(time.time() - begin)+'::'+file_name)
+						if not encoding or encoding == 'NONE' or encoding == 'Unknown' or confidence < 0.7:
 							fallback = test_fallback_encodings(file_name)
-						if fallback != False:
-							encoding = fallback
-
-
+							if fallback:
+								encoding = fallback
 				if v:
 					if encoding == 'ASCII':
 						encoding = 'UTF-8'
@@ -193,7 +190,6 @@ class EncodingOnStatusBarListener(sublime_plugin.EventListener):
 						ConvertToUTF8(v, file_name, encoding).start()
 
 		Pref.tmp_cache_fallback_encodings = {}
-
 
 class Toutf8fromBestGuessCommand(sublime_plugin.WindowCommand):
 
@@ -360,6 +356,8 @@ def test_fallback_encodings(file_name, encodings = False):
 			Pref.tmp_cache_fallback_encodings[key] = encoding
 			return encoding
 		except UnicodeDecodeError:
+			if debug:
+				print('test_fallback_encodings_cached::'+_encoding+'::'+file_name)
 			Pref.tmp_cache_fallback_encodings[key] = False
 			fp.close()
 	return False
@@ -391,3 +389,8 @@ def encoding_normalize_for_comparation(encoding):
 		except:
 			pass
 	return encoding.strip().upper().replace(' ', '-').replace('_', '-').replace('-WITH-BOM', '').replace('-LE', '').replace('-BE', '').replace(')', '').replace('-', '').replace('_', '').strip();
+
+def unique(seq):
+    seen = set()
+    seen_add = seen.add
+    return [ x for x in seq if not (x in seen or seen_add(x))]

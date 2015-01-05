@@ -5,5 +5,5 @@
 	// Automatically opens as UTF-8 the following encodings list
 	// NOTE: Encoding detection is not acurrated
 	// don't abuse of this feature
-	"open_automatically_as_utf8": [ ] //example ["GB2312", "ISO-8859-5"]
+	"open_automatically_as_utf8": [] //example ["GB2312", "ISO-8859-1"]
 }
