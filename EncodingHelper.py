@@ -17,11 +17,24 @@ debug = False
 
 def plugin_loaded():
 	global s, Pref, EncodingOnStatusBarListener
+
+	s = sublime.load_settings('Preferences.sublime-settings')
+	if not s.get('show_encoding', False):
+		s.set('show_encoding', True)
+		sublime.save_settings("Preferences.sublime-settings")
+
 	s = sublime.load_settings('EncodingHelper.sublime-settings')
 	Pref = Pref()
 	Pref.load();
 	s.clear_on_change('reload')
 	s.add_on_change('reload', lambda:Pref.load())
+
+	if sublime.platform() in ('linux', 'osx'):
+		import sys
+		path = os.path.normpath(os.path.dirname(sublime.packages_path())+'/Packages/EncodingHelper/Codecs33-'+sublime.platform()+'-'+sublime.arch()+'/lib')
+		if path not in sys.path:
+			sys.path.append(path)
+
 	EncodingOnStatusBarListener = EncodingOnStatusBarListener()
 	EncodingOnStatusBarListener.init_();
 
@@ -267,7 +280,24 @@ class ConvertToUTF8(threading.Thread):
 				else:
 					sublime.set_timeout(lambda:self.on_done(self.encoding), 0)
 		except LookupError:
-			sublime.set_timeout(lambda:self.on_lookup_error(self.file_name, self.encoding), 0)
+			# osx, linux oddities
+			import _multibytecodec, imp, encodings
+			imp.reload(encodings)
+			imp.reload(codecs)
+			codecs.getencoder(self.encoding)
+			try:
+				if debug:
+					print('ConvertToUTF8::'+__encoding+'::'+self.file_name)
+				self.content = open(self.file_name, "r", encoding=__encoding, errors='strict', newline=None).read()
+				if len(self.content) != 0:
+					if self.callback:
+						sublime.set_timeout(lambda:self.callback_function(self.content, self.encoding), 0)
+					else:
+						sublime.set_timeout(lambda:self.on_done(self.encoding), 0)
+			except LookupError:
+				sublime.set_timeout(lambda:self.on_lookup_error(self.file_name, self.encoding), 0)
+			except:
+				sublime.set_timeout(lambda:self.on_error(self.file_name, self.encoding), 0)
 		except:
 			sublime.set_timeout(lambda:self.on_error(self.file_name, self.encoding), 0)
 
