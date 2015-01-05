@@ -51,6 +51,9 @@ http://www.mauvecloud.net/charsets/index.html
 codecs:
 http://docs.python.org/library/codecs.html
 
+ST linux and OSX codecs from
+https://github.com/seanliang/Codecs33
+
 Source-code
 ------------------
 
