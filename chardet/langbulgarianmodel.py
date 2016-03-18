@@ -13,12 +13,12 @@
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
@@ -33,7 +33,7 @@ from . import constants
 # 252: 0 - 9
 
 # Character Mapping Table:
-# this table is modified base on win1251BulgarianCharToOrderMap, so 
+# this table is modified base on win1251BulgarianCharToOrderMap, so
 # only number <64 is sure valid
 
 Latin5_BulgarianCharToOrderMap = ( \
@@ -74,12 +74,12 @@ win1251BulgarianCharToOrderMap = ( \
   7,  8,  5, 19, 29, 25, 22, 21, 27, 24, 17, 75, 52,253, 42, 16,  # f0
 )
 
-# Model Table: 
+# Model Table:
 # total sequences: 100%
 # first 512 sequences: 96.9392%
 # first 1024 sequences:3.0618%
 # rest  sequences:     0.2992%
-# negative sequences:  0.0020% 
+# negative sequences:  0.0020%
 BulgarianLangModel = ( \
 0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,2,3,3,3,3,3,
 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,3,3,3,2,2,3,2,2,1,2,2,

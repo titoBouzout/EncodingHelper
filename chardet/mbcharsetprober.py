@@ -15,12 +15,12 @@
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
@@ -69,9 +69,9 @@ class MultiByteCharSetProber(CharSetProber):
                     self._mDistributionAnalyzer.feed(self._mLastChar, charLen)
                 else:
                     self._mDistributionAnalyzer.feed(aBuf[i-1:i+1], charLen)
-                    
+
         self._mLastChar[0] = aBuf[aLen - 1]
-        
+
         if self.get_state() == constants.eDetecting:
             if self._mDistributionAnalyzer.got_enough_data() and \
                (self.get_confidence() > constants.SHORTCUT_THRESHOLD):

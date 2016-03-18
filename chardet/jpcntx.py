@@ -13,12 +13,12 @@
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
@@ -123,7 +123,7 @@ jp2CharContext = ( \
 class JapaneseContextAnalysis:
     def __init__(self):
         self.reset()
-        
+
     def reset(self):
         self._mTotalRel = 0 # total sequence received
         self._mRelSample = [0] * NUM_OF_CATEGORY # category counters, each interger counts sequence in its category
@@ -133,11 +133,11 @@ class JapaneseContextAnalysis:
 
     def feed(self, aBuf, aLen):
         if self._mDone: return
-        
+
         # The buffer we got is byte oriented, and a character may span in more than one
-        # buffers. In case the last one or two byte in last buffer is not complete, we 
+        # buffers. In case the last one or two byte in last buffer is not complete, we
         # record how many byte needed to complete that character and skip these bytes here.
-        # We can choose to record those bytes as well and analyse the character once it 
+        # We can choose to record those bytes as well and analyse the character once it
         # is complete, but since a character will not make much difference, by simply skipping
         # this character will simply our logic and improve performance.
         i = self._mNeedToSkipCharNum
@@ -158,7 +158,7 @@ class JapaneseContextAnalysis:
 
     def got_enough_data(self):
         return self._mTotalRel > ENOUGH_REL_THRESHOLD
-    
+
     def get_confidence(self):
         # This is just one way to calculate confidence. It works well for me.
         if self._mTotalRel > MINIMUM_DATA_THRESHOLD:
@@ -168,7 +168,7 @@ class JapaneseContextAnalysis:
 
     def get_order(self, aBuf):
         return -1, 1
-        
+
 class SJISContextAnalysis(JapaneseContextAnalysis):
     def get_order(self, aBuf):
         if not aBuf: return -1, 1

@@ -1,6 +1,5 @@
-***Important notice for [Sublime Text 3+](http://www.sublimetext.com/) users!***<br/>
-* _Install via an updated version of  [Package Control 2+](https://sublime.wbond.net/installation), **DON'T** install manually_
-* _Since ST3 build 3057, the encoding menu has been moved to the status bar. See [www.sublimetext.com/3dev](http://www.sublimetext.com/3dev) for settings to show encoding and line endings_
+
+_Since ST3 build 3057, the encoding menu has been moved to the status bar. See [www.sublimetext.com/3dev](http://www.sublimetext.com/3dev) for settings to show encoding and line endings_
 
 Description
 ------------------
@@ -58,6 +57,10 @@ Source-code
 ------------------
 
 https://github.com/titoBouzout/EncodingHelper
+
+## Installation
+
+Download or clone the contents of this repository to a folder named exactly as the package name into the Packages/ folder of ST.
 
 Forum Thread
 ------------------
